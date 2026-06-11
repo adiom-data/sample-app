@@ -1,0 +1,34 @@
+load("@rules_oci//oci:defs.bzl", "oci_image", "oci_load")
+load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
+
+pkg_tar(
+    name = "web_layer",
+    srcs = ["//web:build"],
+    package_dir = "/app/web",
+)
+
+pkg_tar(
+    name = "config_layer",
+    srcs = ["gateway.json"],
+    package_dir = "/etc/adiom",
+)
+
+oci_image(
+    name = "image",
+    base = "@gateway_base_linux_amd64",
+    env = {
+        "GATEWAY_CONFIG": "/etc/adiom/gateway.json",
+    },
+    tars = [
+        ":config_layer",
+        ":web_layer",
+    ],
+    user = "65532:65532",
+    visibility = ["//visibility:public"],
+)
+
+oci_load(
+    name = "load",
+    image = ":image",
+    repo_tags = ["sample-app-gateway:latest"],
+)

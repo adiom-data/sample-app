@@ -1,0 +1,20 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: sample-postgres
+spec:
+  instances: 1
+  enableSuperuserAccess: true
+  bootstrap:
+    initdb:
+      database: bootstrap
+      owner: app
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
+  storage:
+    size: 1Gi

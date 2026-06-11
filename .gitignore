@@ -1,0 +1,6 @@
+/.aspect/
+/bazel-*
+/node_modules/
+/web/node_modules/
+/web/dist/
+/.pnpm-store/

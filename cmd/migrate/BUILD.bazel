@@ -1,0 +1,24 @@
+load("@rules_oci//oci:defs.bzl", "oci_image", "oci_load", "oci_push")
+
+oci_image(
+    name = "image",
+    base = "@goosemigrate_base_linux_amd64",
+    tars = [
+        "//services/api/migrations:layer",
+    ],
+    user = "65532:65532",
+    visibility = ["//visibility:public"],
+)
+
+oci_load(
+    name = "load",
+    image = ":image",
+    repo_tags = ["sample-app-migrate:latest"],
+)
+
+oci_push(
+    name = "push",
+    image = ":image",
+    remote_tags = ["latest"],
+    repository = "ghcr.io/adiom-data/sample-app-migrate",
+)

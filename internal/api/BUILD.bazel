@@ -1,0 +1,20 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "api",
+    srcs = [
+        "app.go",
+        "sample.go",
+    ],
+    importpath = "github.com/adiom-data/sample-app/internal/api",
+    visibility = ["//cmd/api:__pkg__"],
+    deps = [
+        "//gen/go/sample/v1:samplev1",
+        "//gen/go/sample/v1/samplev1connect",
+        "//internal/auth",
+        "//internal/api/db",
+        "@com_connectrpc_connect//:connect",
+        "@com_github_adiom_data_framework//auth/tokenissuer",
+        "@com_github_adiom_data_framework//httpapp",
+    ],
+)

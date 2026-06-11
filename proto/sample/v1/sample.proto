@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package sample.v1;
+
+option go_package = "github.com/adiom-data/sample-app/gen/go/sample/v1;samplev1";
+
+service SampleService {
+  rpc GetSession(GetSessionRequest) returns (GetSessionResponse);
+}
+
+message GetSessionRequest {}
+
+message GetSessionResponse {
+  bool authenticated = 1;
+  User user = 2;
+  Database database = 3;
+}
+
+message User {
+  reserved 4;
+  reserved "picture";
+
+  string id = 1;
+  string email = 2;
+  string name = 3;
+  repeated string scopes = 5;
+}
+
+message Database {
+  bool enabled = 1;
+  string error = 2;
+}

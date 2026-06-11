@@ -1,0 +1,7 @@
+node_modules
+web/node_modules
+bazel-bin
+bazel-out
+bazel-sample-app
+dist
+

@@ -1,0 +1,15 @@
+load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
+
+filegroup(
+    name = "sql",
+    srcs = glob(["*.sql"]),
+    visibility = ["//visibility:public"],
+)
+
+pkg_tar(
+    name = "layer",
+    srcs = glob(["*.sql"]),
+    package_dir = "/app/migrations",
+    strip_prefix = ".",
+    visibility = ["//visibility:public"],
+)
