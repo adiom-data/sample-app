@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# Preview overlay for the app bundle. The per-PR preview registry is authenticated and
+# the platform provisions a "registry-pull" secret in the preview namespace; inject it
+# into every Deployment's pod spec so images can be pulled. Kept as a sibling of the base
+# (deploy/app) rather than nested, because kustomize forbids an overlay referencing a base
+# that contains it. Prod reconciles deploy/app directly (its namespace default
+# ServiceAccount already carries the pull secret), so prod is unaffected.
+resources:
+  - ../app
+patches:
+  - target:
+      kind: Deployment
+    patch: |-
+      - op: add
+        path: /spec/template/spec/imagePullSecrets
+        value:
+          - name: registry-pull

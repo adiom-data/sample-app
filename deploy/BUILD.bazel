@@ -15,6 +15,18 @@ filegroup(
     srcs = glob(["migrations/**"]),
 )
 
+# Preview overlays (sibling kustomizations that inject the preview-registry pull
+# secret). They reference the base bundle dirs, so the preview bundles package both.
+filegroup(
+    name = "app_preview_srcs",
+    srcs = glob(["app-preview/**"]),
+)
+
+filegroup(
+    name = "migration_preview_srcs",
+    srcs = glob(["migrations-preview/**"]),
+)
+
 deploy_image(
     name = "api_image",
     image = "//cmd/api:image",
@@ -79,10 +91,13 @@ image_kustomization(
     bundle_name = "migration",
     force = True,
     images = [":migrate_image"],
-    overlay_path = "./",
+    overlay_path = "./migrations-preview",
     repository_prefix_override_all = "{STABLE_PREVIEW_REFERENCE_PREFIX}",
-    source_prefix = "deploy/migrations",
-    srcs = [":migration_srcs"],
+    source_prefix = "deploy",
+    srcs = [
+        ":migration_preview_srcs",
+        ":migration_srcs",
+    ],
     stamp = True,
 )
 
@@ -94,10 +109,13 @@ image_kustomization(
         ":api_image",
         ":gateway_image",
     ],
-    overlay_path = "./",
+    overlay_path = "./app-preview",
     repository_prefix_override_all = "{STABLE_PREVIEW_REFERENCE_PREFIX}",
-    source_prefix = "deploy/app",
-    srcs = [":app_srcs"],
+    source_prefix = "deploy",
+    srcs = [
+        ":app_preview_srcs",
+        ":app_srcs",
+    ],
     stamp = True,
 )
 

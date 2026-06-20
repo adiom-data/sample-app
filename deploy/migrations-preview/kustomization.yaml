@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# Preview overlay for the migrations bundle: inject the preview-registry pull secret into
+# the migration Jobs (see deploy/app-preview for rationale). Prod reconciles
+# deploy/migrations directly.
+resources:
+  - ../migrations
+patches:
+  - target:
+      kind: Job
+    patch: |-
+      - op: add
+        path: /spec/template/spec/imagePullSecrets
+        value:
+          - name: registry-pull
